@@ -11,9 +11,9 @@
                 <div class="row">
                     <!-- Logo on the left side -->
                      <?php if(isset($_SESSION['user_id'])) : ?>
-                        <p>You're logged in as: <?= $username; ?></p>
+                        <a href="index.php" class="navbar-brand">You're logged in as: <?= $_SESSION['username']; ?></a>
                      <?php else : ?>
-                        <p class="navbar-brand">MyWebsite</p>
+                        <a href="index.php" class="navbar-brand">MyWebsite</a>
                      <?php endif; ?>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

@@ -12,6 +12,8 @@ if(isset($_GET['success_register']) && isset($_SESSION['success_register'])) {
     unset($_SESSION['success_register']);
 }
 
+$allDiscutions = $discution->getAllDiscutions();
+
 if(isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $username = $_SESSION['username'];
@@ -75,7 +77,7 @@ if(isset($_SESSION['user_id'])) {
                             <p class="mt-5">Tour discutions:</p>
                             <ul class="list-group">
                             <?php foreach($userDiscutions as $userDiscution) : ?>
-                                <li class="list-group-item"><a class="navbar-brand" href="discutions?<?= $userDiscution['id']; ?>"><?= $userDiscution['topic']; ?></a></li>
+                                <li class="list-group-item"><a class="navbar-brand" href="questions.php?discution_id=<?= $userDiscution['id']; ?>"><?= $userDiscution['topic']; ?></a></li>
                             <?php endforeach; ?>
                             </ul>
                         <?php else : ?>
@@ -84,8 +86,16 @@ if(isset($_SESSION['user_id'])) {
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
-            <div class="col-md-9">
-                col
+            <div class="col-md-9 ps-5">
+                <?php if(isset($allDiscutions)) : ?>
+                    <ul class="list-group">
+                        <?php foreach($allDiscutions as $discution) : ?>
+                            <li class="list-group-item w-75"><a class="navbar-brand" href="questions.php?discution_id=<?= $discution['id']; ?>"><?= $discution['topic']; ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else : ?>
+                    <p>No discutions yet...</p>
+                <?php endif; ?>
             </div>
         </div>
         

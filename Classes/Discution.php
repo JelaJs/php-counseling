@@ -60,6 +60,8 @@ class Discution extends Database {
             if ($result) {
                 $question = new Question();
                 $question->createQuestion($_SESSION['user_id'], $this->discutionId, $this->question, $this->connection);
+                header("Location: index.php");
+                die();
             } else {
                 $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
                 header("Location: index.php");

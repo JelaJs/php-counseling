@@ -7,7 +7,7 @@ class Database extends SessionConfig {
     private const DB_PASSWORD = '';
     private const DATABASE = 'counseling';
 
-    protected $connection;
+    public $connection;
 
     public function __construct() {
         $this->connection = mysqli_connect(self::HOST, self::DB_USERNAME, self::DB_PASSWORD, self::DATABASE);
