@@ -43,11 +43,11 @@ if(isset($_SESSION['user_id'])) {
                     <img src="profile_images/default/default-avatar.png" class="card-img-top" alt="default profile picture">
                     <?php endif; ?>
                     <?php if(isset($profileImage) && $profileImage !== '') : ?>
-                        <img src="<?= $profileImage; ?>" class="card-img-top" alt="default profile picture">
+                        <img src="<?= $profileImage; ?>" class="card-img-top" alt="profile image">
                     <?php endif; ?>
                     <div class="card-body">
                         <h5 class="card-title"><?= $username; ?></h5>
-                        <form action="upload.php" method="POST" enctype="multipart/form-data">
+                        <form action="controller/upload.php" method="POST" enctype="multipart/form-data">
                             <input type="file" name="file" class="btn p-0">
                             <button type="submit" name="submit" class="btn btn-primary mt-1">Upload Image</button>
                         </form>
@@ -58,7 +58,7 @@ if(isset($_SESSION['user_id'])) {
                     <?php endif ?>
                 </div>
                     <?php if(isset($type) && $type === 'listener') : ?>
-                    <form action="discution.php" method="POST" class="mt-5">
+                    <form action="controller/discution.php" method="POST" class="mt-5">
                         <div class="mb-3">
                             <label class="form-label">Discution Topic</label>
                             <input type="text" name="discution_topic" class="form-control" placeholder="E.g. Programming">

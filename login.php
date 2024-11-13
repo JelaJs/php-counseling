@@ -19,9 +19,10 @@ if(isset($_SESSION['user_id'])) {
     <title>Login</title>
 </head>
 <body>
+    <?php require_once "navbar.php"; ?>
 
     <div class="container mt-4">
-        <form action="loginLogic.php" method="POST">
+        <form action="controller/loginLogic.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Email</label>
                 <input type="email" name="email" class="form-control" placeholder="Email@email.com">

@@ -4,14 +4,14 @@ if(!isset($_GET['discution_id']) || empty($_GET['discution_id'])) {
     die("Id is not set");
 }
 
-require_once "Classes/Database.php";
+require_once "Classes/SessionConfig.php";
 require_once "Classes/UserDiscution.php";
 require_once "Classes/Question.php";
 require_once "Classes/Answer.php";
 
 $discution_id = $_GET['discution_id'];
 
-$db = new Database();
+$session = new SessionConfig();
 $discution = new UserDiscution();
 $question = new Question();
 $answer = new Answer();
@@ -20,14 +20,14 @@ $discutionById = $discution->getDiscutionByDiscutionId($discution_id);
 $haveAnswer = $discutionById['have_answer'];
 $advisorId = $discutionById['advisor_id'];
 
-$discutionQuestionsAndUser = $question->getQuestionsFromDiscution($db->connection, $discution_id);
+$discutionQuestionsAndUser = $question->getQuestionsFromDiscution($discution_id);
 
 if($discutionQuestionsAndUser) {
     $discutionQuestions = $discutionQuestionsAndUser[0];
     $questionUser = $discutionQuestionsAndUser[1];
 }
 
-$discutionAnswersAndUser = $answer->getAnswersFromDiscution($db->connection, $discution_id);
+$discutionAnswersAndUser = $answer->getAnswersFromDiscution($discution_id);
 if($discutionAnswersAndUser) {
     $discutionAnswers = $discutionAnswersAndUser[0];
     $answerUser = $discutionAnswersAndUser[1];
@@ -35,7 +35,7 @@ if($discutionAnswersAndUser) {
 
 //$mergedArrays = array_merge($discutionQuestions, $discutionAnswers);
 
-$db->startSession();
+$session->startSession();
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +79,7 @@ $db->startSession();
                         <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
                     <?php endif; ?>
                     <div class="d-flex justify-content-between w-100">
-                        <p class="fw-bold mb-0"><?= $questionUser['username']; ?></p>
+                        <p class="fw-bold mb-0"><?= $answerUser['username']; ?></p>
                         <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($answer['created_at'])); ?></p>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ $db->startSession();
     
     <?php if(isset($_SESSION['user_id'])) : ?>
         <?php if($discutionQuestions[0]['user_id'] === $_SESSION['user_id']) : ?>
-            <form action="questionLogic.php" method="POST" class="mb-3">
+            <form action="controller/questionLogic.php" method="POST" class="mb-3">
                 <input type="number" name="discution_id" value="<?= $discution_id; ?>" hidden>
                 <div class="mb-3">
                     <input type="text" name="question" class="form-control" placeholder="Type your question here" required>
@@ -106,7 +106,7 @@ $db->startSession();
         <?php endif; ?>
 
         <?php if(($_SESSION['type'] === "advisor" && $haveAnswer == false) || ($_SESSION['type'] === "advisor" && $haveAnswer == true && $advisorId == $_SESSION['user_id'])) : ?>
-            <form action="answerLogic.php" method="POST" class="mb-3">
+            <form action="controller/answerLogic.php" method="POST" class="mb-3">
                 <input type="number" name="discution_id" value="<?= $discution_id; ?>" hidden>
                 <div class="mb-3">
                     <input type="text" name="answer" class="form-control" placeholder="Type your answer here">

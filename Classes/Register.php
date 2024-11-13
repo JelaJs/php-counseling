@@ -19,10 +19,9 @@ class Register extends Database{
     }
 
     public function isUserLoggedIn() {
-        $this->startSession();
 
         if(isset($_SESSION['user_id'])) {
-            header("Location: index.php");
+            header("Location: ../index.php");
         }
     }
 
@@ -38,30 +37,30 @@ class Register extends Database{
     private function isUsernameFieldValid() {
         if(!isset($this->username) || empty($this->username)) {
             $_SESSION['input_error'] = "Username can't be empty";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if(strlen($this->username) < 4) {
             $_SESSION['input_error'] = "Username needs to be at least 4 charachters long";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if(strpos($this->username, ' ')) {
             $_SESSION['input_error'] = "You can't use space(' ') in username field";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if($this->checkIfUsernameExist() && !isset($_SESSION['query_error'])) {
             $_SESSION['input_error'] = "User with this username already exist";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         } 
 
         if(isset($_SESSION['query_error'])) {
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
     }
@@ -69,13 +68,13 @@ class Register extends Database{
     private function isTypeFieldValid() {
         if(!isset($this->type) || empty($this->type)) {
             $_SESSION['input_error'] = "Type can't be empty";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if($this->type !== "listener" && $this->type !== "advisor") {
             $_SESSION['input_error'] = "The type can be either listener or advisor";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
     }
@@ -83,24 +82,24 @@ class Register extends Database{
     private function isEmailFieldValid() {
         if(!isset($this->email) || empty($this->email)) {
             $_SESSION['input_error'] = "Email can't be empty";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['input_error'] = "Invalid Email format";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if($this->checkIfEmailExist() && !isset($_SESSION['query_error'])) {
             $_SESSION['input_error'] = "User with this email already exist";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         } 
 
         if(isset($_SESSION['query_error'])) {
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
     }
@@ -108,13 +107,13 @@ class Register extends Database{
     private function isPasswordFieldValid() {
         if(!isset($this->password) || empty($this->password)) {
             $_SESSION['input_error'] = "Password can't be empty";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
 
         if(!$this->validatePasswordFieldRules($this->password)) {
             $_SESSION['input_error'] = "Password needs to be at least 6 charachters long and needs to have at least one big letter";
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
     }
@@ -201,22 +200,19 @@ class Register extends Database{
             $result = $stmt->execute();
     
             if ($result) {
-                $this->startSession();
                 $_SESSION['success_register'] = "User registered successfully!";
-                header("Location: index.php?success_register");
+                header("Location: ../index.php?success_register");
             } else {
                 // Handle error during query execution
-                $this->startSession();
                 $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header("Location: register.php");
+                header("Location: ../register.php");
                 die();
             }
     
             $stmt->close();
         } else {
-            $this->startSession();
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header("Location: register.php");
+            header("Location: ../register.php");
             die();
         }
     }

@@ -21,11 +21,10 @@ class User extends Database{
     }
 
     private function setProfileImgInfo() {
-        $this->startSession();
 
         if($this->file['name'] == '') {
             $_SESSION['file_error'] = "You need to add image";
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
 
@@ -75,23 +74,24 @@ class User extends Database{
             if(!$this->errorExist()) {
                 if($this->isImageSizeCorrect()) {
                     $this->setProfileimgUploadName();
-                    $filenameDestionation = 'uploads/'.$this->profileImgUploadName;
+                    $filenameDestionation = '../uploads/'.$this->profileImgUploadName;
                     move_uploaded_file($this->profileImgTmpName, $filenameDestionation);
-                    $this->updateProfileImage($filenameDestionation);
-                    header("Location: index.php");
+                    $filenameDestionationFromIndex = 'uploads/'.$this->profileImgUploadName;
+                    $this->updateProfileImage($filenameDestionationFromIndex);
+                    header("Location: ../index.php");
                 } else {
                     $_SESSION['file_error'] = "Your image is too big";
-                    header("Location: index.php");
+                    header("Location: ../index.php");
                     die();
                 }
             } else {
                 $_SESSION['file_error'] = "There was an error uploading your image";
-                header("Location: index.php");
+                header("Location: ../index.php");
                 die();
             }
         }else {
             $_SESSION['file_error'] = "You can't upload a file with this extension";
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
     }
@@ -110,15 +110,14 @@ class User extends Database{
                 $this->getProfileImgFromDB();
             } else {
                 $_SESSION['query_error'] = "Error updating profile image: " . $stmt->error;
-                header("Location: index.php");
+                header("Location: ../index.php");
                 die();
             }
             
             $stmt->close();
         } else {
-            $this->startSession();
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
     }

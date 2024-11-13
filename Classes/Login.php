@@ -14,7 +14,6 @@ class Login extends Database {
     }
 
     private function areInputsValid() {
-        $this->startSession();
 
         $this->isEmailFieldValid();
         $this->isPasswordFieldValid();
@@ -25,19 +24,19 @@ class Login extends Database {
     private function isEmailFieldValid() {
         if(!isset($this->email) || empty($this->email)) {
             $_SESSION['input_error'] = "Email can't be empty";
-            header("Location: login.php");
+            header("Location: ../login.php");
             die();
         }
 
         if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['input_error'] = "Invalid Email format";
-            header("Location: login.php");
+            header("Location: ../login.php");
             die();
         }
 
         if(!$this->emailExist()) {
             $_SESSION['input_error'] = "There is no user with this email address";
-            header("Location: login.php");
+            header("Location: ../login.php");
             die();
         }
     }    
@@ -45,7 +44,7 @@ class Login extends Database {
     private function isPasswordFieldValid() {
         if(!isset($this->password) || empty($this->password)) {
             $_SESSION['input_error'] = "Password can't be empty";
-            header("Location: login.php");
+            header("Location: ../login.php");
             die();
         }
 
@@ -54,7 +53,7 @@ class Login extends Database {
 
             if(!$this->isPasswordValid($password)) {
                $_SESSION['input_error'] = "Invalid password";
-                header("Location: login.php");
+                header("Location: ../login.php");
                 die();
             }
             
@@ -144,7 +143,6 @@ class Login extends Database {
                 if ($result_set->num_rows > 0) {
                     $row = $result_set->fetch_assoc(); 
 
-                    $this->startSession();
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['profile_image'] = $row['profile_image'];
@@ -156,7 +154,7 @@ class Login extends Database {
 
                     $_SESSION['last_regeneration'] = time();
 
-                    header("Location: index.php");
+                    header("Location: ../index.php");
                     die();
                 } else {
                     return false;

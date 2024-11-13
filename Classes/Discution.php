@@ -26,20 +26,19 @@ class Discution extends Database {
     private function isInputValid($input) {
         if(!isset($input)) {
             $_SESSION['discution_error'] = "You need to add text";
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
 
         $trimmedInput= trim($input);
         if(empty($trimmedInput)) {
             $_SESSION['discution_error'] = "You need to add text";
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
     }
 
     public function createQuestionAndDiscution() {
-        $this->startSession();
 
         $this->areInputsValid();
         $this->createDiscution();
@@ -60,18 +59,18 @@ class Discution extends Database {
             if ($result) {
                 $question = new Question();
                 $question->createQuestion($_SESSION['user_id'], $this->discutionId, $this->question, $this->connection);
-                header("Location: index.php");
+                header("Location: ../index.php");
                 die();
             } else {
                 $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header("Location: index.php");
+                header("Location: ../index.php");
                 die();
             }
     
             $stmt->close();
         } else {
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header("Location: index.php");
+            header("Location: ../index.php");
             die();
         }
     }

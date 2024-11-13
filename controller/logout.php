@@ -1,6 +1,6 @@
 <?php
 
-require_once "Classes/SessionConfig.php";
+require_once "../Classes/SessionConfig.php";
 
 $session = new SessionConfig();
 $session->startSession();
@@ -9,4 +9,4 @@ $session->startSession();
 session_unset();
 session_destroy();
 
-header("Location: index.php");
+header("Location: ../index.php");

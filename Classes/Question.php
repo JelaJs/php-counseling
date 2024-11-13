@@ -1,10 +1,17 @@
 <?php
+require_once "Database.php";
 
-class Question{
-    public function createQuestion($userId, $discutionId, $question, $connection) {
+class Question extends Database{
+
+    public function __construct() {
+
+        parent::__construct();
+    }
+
+    public function createQuestion($userId, $discutionId, $question) {
         $query = "INSERT INTO question (user_id, question, discution_id) VALUES (?, ?, ?)";
 
-        $stmt = $connection->prepare($query);
+        $stmt = $this->connection->prepare($query);
         
         if ($stmt) {
             $stmt->bind_param('isi', $userId, $question, $discutionId);
@@ -15,23 +22,22 @@ class Question{
                 return true;
             } else {
                 $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header("Location: register.php");
+                header('Location: ' . $_SERVER['HTTP_REFERER']);
                 die();
             }
     
             $stmt->close();
         } else {
-            $this->startSession();
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header("Location: register.php");
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
             die();
         }
     }   
 
-    public function getQuestionsFromDiscution($connection, $discutionId) {
+    public function getQuestionsFromDiscution($discutionId) {
         $query = "SELECT * FROM question WHERE discution_id = ?";
 
-        $stmt = $connection->prepare($query);
+        $stmt = $this->connection->prepare($query);
     
         if ($stmt) {
             $stmt->bind_param("i", $discutionId);
@@ -42,7 +48,7 @@ class Question{
     
                 if ($result_set->num_rows > 0) {
                     $row = $result_set->fetch_all(MYSQLI_ASSOC); 
-                    $questionUser = $this->getQuestionUser($connection, $row[0]['user_id']);
+                    $questionUser = $this->getQuestionUser($row[0]['user_id']);
                     return [$row, $questionUser];
                 } else {
                     return false;
@@ -59,10 +65,10 @@ class Question{
         }
     }
 
-    public function getQuestionUser($connection, $userId) {
+    public function getQuestionUser($userId) {
         $query = "SELECT username, profile_image FROM user WHERE id = ?";
 
-        $stmt = $connection->prepare($query);
+        $stmt = $this->connection->prepare($query);
     
         if ($stmt) {
             $stmt->bind_param("i", $userId);

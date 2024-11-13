@@ -19,9 +19,10 @@ if(isset($_SESSION['user_id'])) {
     <title>Register</title>
 </head>
 <body>
+    <?php require_once "navbar.php"; ?>
 
     <div class="container mt-4">
-        <form action="registerLogic.php" method="POST">
+        <form action="controller/registerLogic.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" placeholder="Exampl123">
