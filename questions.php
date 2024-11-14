@@ -50,7 +50,7 @@ $session->startSession();
     <?php require_once "navbar.php"; ?>
     <div class="container mt-3">
     <?php if($discutionQuestionsAndUser) : ?>
-    <?php foreach($discutionQuestions as $question) : ?>
+        <?php foreach($discutionQuestions as $question) : ?>
         <div class="card mb-3">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
@@ -67,7 +67,8 @@ $session->startSession();
                 <p class="mb-0"><?= $question['question']; ?></p>
             </div>
         </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
     <?php if($discutionAnswersAndUser) : ?>
         <?php foreach($discutionAnswers as $answer) : ?>
             <div class="card mb-3">
@@ -88,7 +89,11 @@ $session->startSession();
         </div>
         <?php endforeach; ?>
     <?php endif; ?>
+    <?php if(isset($_SESSION['query_error'])) : ?>
+        <p><?= $_SESSION['query_error']; ?></p>
+        <?php unset($_SESSION['query_error']); ?>
     <?php endif; ?>
+    
     
     <?php if(isset($_SESSION['user_id'])) : ?>
         <?php if($discutionQuestions[0]['user_id'] === $_SESSION['user_id']) : ?>

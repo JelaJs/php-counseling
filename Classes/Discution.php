@@ -48,30 +48,29 @@ class Discution extends Database {
         $query = "INSERT INTO discution (user_id, topic, have_answer) VALUES (?, ?, ?)";
 
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param('isi', $_SESSION['user_id'], $this->discutionTopic, $this->discutionCreatedDefault);
-    
-            $result = $stmt->execute();
 
-            $this->discutionId = $stmt->insert_id;
-    
-            if ($result) {
-                $question = new Question();
-                $question->createQuestion($_SESSION['user_id'], $this->discutionId, $this->question, $this->connection);
-                header("Location: ../index.php");
-                die();
-            } else {
-                $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header("Location: ../index.php");
-                die();
-            }
-    
-            $stmt->close();
-        } else {
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
             header("Location: ../index.php");
             die();
         }
+
+        $stmt->bind_param('isi', $_SESSION['user_id'], $this->discutionTopic, $this->discutionCreatedDefault);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
+            header("Location: ../index.php");
+            die();
+        }
+
+        $this->discutionId = $stmt->insert_id;
+        $stmt->close();
+    
+        $question = new Question();
+        $question->createQuestion($_SESSION['user_id'], $this->discutionId, $this->question);
+
+        header("Location: ../index.php");
+        die();
     }
 }

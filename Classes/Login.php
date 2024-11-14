@@ -48,15 +48,17 @@ class Login extends Database {
             die();
         }
 
-        if($this->getPasswordFromDB()) {
-            $password = $this->getPasswordFromDB();
+        if($this->getPasswordFromDB() == false) {
+            header("Location: ../login.php");
+            die();
+        }
 
-            if(!$this->isPasswordValid($password)) {
-               $_SESSION['input_error'] = "Invalid password";
-                header("Location: ../login.php");
-                die();
-            }
-            
+        $password = $this->getPasswordFromDB();
+
+        if(!$this->isPasswordValid($password)) {
+           $_SESSION['input_error'] = "Invalid password";
+            header("Location: ../login.php");
+            die();
         }
     }
 
@@ -132,42 +134,45 @@ class Login extends Database {
     private function login() {
         $sql = "SELECT id, username, profile_image, type FROM user WHERE email = ?";
         $stmt = $this->connection->prepare($sql);
-        
-        if ($stmt) {
-            $stmt->bind_param("s", $this->email);
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_assoc(); 
 
-                    $_SESSION['user_id'] = $row['id'];
-                    $_SESSION['username'] = $row['username'];
-                    $_SESSION['profile_image'] = $row['profile_image'];
-                    $_SESSION['type'] = $row['type'];
-
-                    $newSessionId = session_create_id();
-                    $sessionId = $newSessionId . "_" . $userId;
-                    session_id($sessionId);
-
-                    $_SESSION['last_regeneration'] = time();
-
-                    header("Location: ../index.php");
-                    die();
-                } else {
-                    return false;
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                return false;
-            }
-    
-            $stmt->close();
-        } else {
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return false;
+            header("Location: ../login.php");
+            die();
         }
+
+        $stmt->bind_param("s", $this->email);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
+            header("Location: ../login.php");
+            die();
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            header("Location: ../login.php");
+            die();
+        }
+        
+        $row = $result_set->fetch_assoc(); 
+
+        $_SESSION['user_id'] = $row['id'];
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['profile_image'] = $row['profile_image'];
+        $_SESSION['type'] = $row['type'];
+
+        /*$newSessionId = session_create_id();
+        $sessionId = $newSessionId . "_" . $userId;
+        session_id($sessionId);*/
+
+        session_regenerate_id(true);
+        $_SESSION['last_regeneration'] = time();
+        $stmt->close();
+
+        header("Location: ../index.php");
+        die();
     }
 }

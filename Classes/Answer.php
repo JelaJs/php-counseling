@@ -27,113 +27,108 @@ class Answer extends Database{
         $query = "INSERT INTO answer (discution_id, user_id, answer) VALUES (?, ?, ?)";
 
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param('iis', $discutionId, $_SESSION['user_id'], $answer);
-    
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $this->updateDiscutionState($discutionId, $this->connection);
-            } else {
-                $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header('Location: ' . $_SERVER['HTTP_REFERER']);
-                die();
-            }
-    
-            $stmt->close();
-        } else {
-            $this->startSession();
+
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
             header('Location: ' . $_SERVER['HTTP_REFERER']);
             die();
         }
+
+        $stmt->bind_param('iis', $discutionId, $_SESSION['user_id'], $answer);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            die();
+        }
+    
+        $stmt->close();
+        $this->updateDiscutionState($discutionId, $this->connection);      
     }
 
     private function updateDiscutionState($discutionId) {
         $query = "UPDATE discution SET have_answer = 1, advisor_id = ? WHERE id = ?";
 
         $stmt = $this->connection->prepare($query);
-        
-        if ($stmt) {
-            $stmt->bind_param('ii', $_SESSION['user_id'], $discutionId);
-            
-            $result = $stmt->execute();
-            
-            if ($result) {
-                header('Location: ' . $_SERVER['HTTP_REFERER']);
-            } else {
-                $_SESSION['query_error'] = "Error updating profile image: " . $stmt->error;
-                header('Location: ' . $_SERVER['HTTP_REFERER']);
-                die();
-            }
-            
-            $stmt->close();
-        } else {
+
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
             header('Location: ' . $_SERVER['HTTP_REFERER']);
             die();
         }
+
+        $stmt->bind_param('ii', $_SESSION['user_id'], $discutionId);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error updating profile image: " . $stmt->error;
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            die();
+        }
+        
+        header('Location: ' . $_SERVER['HTTP_REFERER']);    
+        $stmt->close();
+        
     }
 
     public function getAnswersFromDiscution($discutionId) {
         $query = "SELECT * FROM answer WHERE discution_id = ?";
 
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param("i", $discutionId);
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_all(MYSQLI_ASSOC); 
-                    $questionUser = $this->getAnswerUser($row[0]['user_id']);
-                    return [$row, $questionUser];
-                } else {
-                    return false;
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                die();
-            }
-    
-            $stmt->close();
-        } else {
+
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
             die();
         }
+
+        $stmt->bind_param("i", $discutionId);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
+            die();
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            return false;
+        }
+    
+        $row = $result_set->fetch_all(MYSQLI_ASSOC); 
+        $questionUser = $this->getAnswerUser($row[0]['user_id']);
+        $stmt->close();
+
+        return [$row, $questionUser];
     }
 
     public function getAnswerUser($userId) {
         $query = "SELECT username, profile_image FROM user WHERE id = ?";
 
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param("i", $userId);
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_assoc(); 
-                    return $row;
-                } else {
-                    return false;
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                die();
-            }
-    
-            $stmt->close();
-        } else {
+
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
             die();
         }
+
+        $stmt->bind_param("i", $userId);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
+            die();
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            return false;
+        }
+ 
+        $row = $result_set->fetch_assoc(); 
+        $stmt->close();
+        return $row;
     }
 }

@@ -53,13 +53,13 @@ class Register extends Database{
             die();
         }
 
-        if($this->checkIfUsernameExist() && !isset($_SESSION['query_error'])) {
+        if($this->checkIfUsernameExist() && !isset($_SESSION['username_query_error'])) {
             $_SESSION['input_error'] = "User with this username already exist";
             header("Location: ../register.php");
             die();
         } 
 
-        if(isset($_SESSION['query_error'])) {
+        if(isset($_SESSION['username_query_error'])) {
             header("Location: ../register.php");
             die();
         }
@@ -92,13 +92,13 @@ class Register extends Database{
             die();
         }
 
-        if($this->checkIfEmailExist() && !isset($_SESSION['query_error'])) {
+        if($this->checkIfEmailExist() && !isset($_SESSION['email_query_error'])) {
             $_SESSION['input_error'] = "User with this email already exist";
             header("Location: ../register.php");
             die();
         } 
 
-        if(isset($_SESSION['query_error'])) {
+        if(isset($_SESSION['email_query_error'])) {
             header("Location: ../register.php");
             die();
         }
@@ -125,59 +125,60 @@ class Register extends Database{
     private function checkIfUsernameExist() {
         $query = "SELECT username FROM user WHERE username = ?";
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param("s", $this->username);
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_assoc(); 
-                    return $row['username'];
-                } else {
-                    return false;
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                return;
-            }
-    
-            $stmt->close();
-        } else {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return;
+
+        if(!$stmt) {
+            $_SESSION['username_query_error'] = "Error preparing statement: " . $this->connection->error;
+            return false;
         }
+
+        $stmt->bind_param("s", $this->username);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['username_query_error'] = "Error executing query: " . $stmt->error;
+            return false;
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            return false;
+        }
+
+        $row = $result_set->fetch_assoc(); 
+        $stmt->close();
+
+        return $row['username'];
+        
     }
 
     private function checkIfEmailExist() {
         $query = "SELECT email FROM user WHERE email = ?";
         $stmt = $this->connection->prepare($query);
     
-        if ($stmt) {
-            $stmt->bind_param("s", $this->email);
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_assoc(); 
-                    return $row['email'];
-                } else {
-                    return false;
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                return;
-            }
-    
-            $stmt->close();
-        } else {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return;
+        if(!$stmt) {
+            $_SESSION['email_query_error'] = "Error preparing statement: " . $this->connection->error;
+            return false;
         }
+
+        $stmt->bind_param("s", $this->email);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['email_query_error'] = "Error executing query: " . $stmt->error;
+            return false;
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            return false;
+        }
+      
+        $row = $result_set->fetch_assoc(); 
+        $stmt->close();
+
+        return $row['email'];        
     }
 
     public function registerUser() {
@@ -193,27 +194,25 @@ class Register extends Database{
         $query = "INSERT INTO user (username, email, password, type) VALUES (?, ?, ?, ?)";
     
         $stmt = $this->connection->prepare($query);
-    
-        if ($stmt) {
-            $stmt->bind_param('ssss', $this->username, $this->email, $password, $this->type);
-    
-            $result = $stmt->execute();
-    
-            if ($result) {
-                $_SESSION['success_register'] = "User registered successfully!";
-                header("Location: ../index.php?success_register");
-            } else {
-                // Handle error during query execution
-                $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-                header("Location: ../register.php");
-                die();
-            }
-    
-            $stmt->close();
-        } else {
+
+        if(!$stmt) {
             $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
             header("Location: ../register.php");
             die();
         }
+
+        $stmt->bind_param('ssss', $this->username, $this->email, $password, $this->type);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
+            header("Location: ../register.php");
+            die();
+        }
+     
+        $_SESSION['success_register'] = "User registered successfully!";
+        header("Location: ../index.php?success_register");
+
+        $stmt->close();
     }
 }

@@ -40,27 +40,15 @@ class User extends Database{
     }
 
     private function isExtensionAllowed() {
-        if(in_array($this->profileImgExt, $this->allowedExt)) {
-            return true;
-        } else {
-            return false;
-        }
+        return in_array($this->profileImgExt, $this->allowedExt);
     }
 
     public function errorExist() {
-        if($this->profileImgError) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->profileImgError;
     }
 
     public function isImageSizeCorrect() {
-        if($this->profileImgSize < 1000000) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->profileImgSize < 1000000;
     }
 
     private function setProfileimgUploadName() {
@@ -70,56 +58,55 @@ class User extends Database{
     public function uploadImage() {
         $this->setProfileImgInfo();
 
-        if($this->isExtensionAllowed()) {
-            if(!$this->errorExist()) {
-                if($this->isImageSizeCorrect()) {
-                    $this->setProfileimgUploadName();
-                    $filenameDestionation = '../uploads/'.$this->profileImgUploadName;
-                    move_uploaded_file($this->profileImgTmpName, $filenameDestionation);
-                    $filenameDestionationFromIndex = 'uploads/'.$this->profileImgUploadName;
-                    $this->updateProfileImage($filenameDestionationFromIndex);
-                    header("Location: ../index.php");
-                } else {
-                    $_SESSION['file_error'] = "Your image is too big";
-                    header("Location: ../index.php");
-                    die();
-                }
-            } else {
-                $_SESSION['file_error'] = "There was an error uploading your image";
-                header("Location: ../index.php");
-                die();
-            }
-        }else {
+        if(!$this->isExtensionAllowed()) {
             $_SESSION['file_error'] = "You can't upload a file with this extension";
             header("Location: ../index.php");
             die();
         }
+
+        if($this->errorExist()) {
+            $_SESSION['file_error'] = "There was an error uploading your image";
+            header("Location: ../index.php");
+            die();
+        }
+
+        if(!$this->isImageSizeCorrect()) {
+            $_SESSION['file_error'] = "Your image is too big";
+            header("Location: ../index.php");
+            die();
+        }
+  
+        $this->setProfileimgUploadName();
+        $filenameDestionation = '../uploads/'.$this->profileImgUploadName;
+        move_uploaded_file($this->profileImgTmpName, $filenameDestionation);
+        $filenameDestionationFromIndex = 'uploads/'.$this->profileImgUploadName;
+        $this->updateProfileImage($filenameDestionationFromIndex);
+        header("Location: ../index.php");
     }
 
     private function updateProfileImage($filenameDestination) {
         $query = "UPDATE user SET profile_image = ? WHERE id = ?";
         
         $stmt = $this->connection->prepare($query);
-        
-        if ($stmt) {
-            $stmt->bind_param('si', $filenameDestination, $_SESSION['user_id']);
-            
-            $result = $stmt->execute();
-            
-            if ($result) {
-                $this->getProfileImgFromDB();
-            } else {
-                $_SESSION['query_error'] = "Error updating profile image: " . $stmt->error;
-                header("Location: ../index.php");
-                die();
-            }
-            
-            $stmt->close();
-        } else {
-            $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
+
+        if(!$stmt) {
+            $_SESSION['img_query_error'] = "Error preparing query: " . $this->connection->error;
             header("Location: ../index.php");
             die();
         }
+
+        $stmt->bind_param('si', $filenameDestination, $_SESSION['user_id']);    
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['img_query_error'] = "Error updating profile image: " . $stmt->error;
+            header("Location: ../index.php");
+            die();
+        }
+
+        $stmt->close();
+        $this->getProfileImgFromDB();    
+        
     }
 
     private function getProfileImgFromDB() {
@@ -127,30 +114,31 @@ class User extends Database{
 
         $stmt = $this->connection->prepare($query);
 
-        if($stmt) {
-            $stmt->bind_param('i', $_SESSION['user_id']);
-
-            $result = $stmt->execute();
-
-            if($result) {
-                $result_set = $stmt->get_result();
-    
-                if ($result_set->num_rows > 0) {
-                    $row = $result_set->fetch_assoc(); 
-                    $_SESSION['profile_image'] = $row['profile_image'];
-                } else {
-                    $_SESSION['profile_image'] = "";
-                }
-            } else {
-                $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-                return;
-            }
-
-            $stmt->close();
-        } else {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return;
+        if(!$stmt) {
+            $_SESSION['img_query_error'] = "Error preparing statement: " . $this->connection->error;
+            header("Location: ../index.php");
+            die();
         }
+
+        $stmt->bind_param('i', $_SESSION['user_id']);
+        $result = $stmt->execute();
+
+        if(!$result) {
+            $_SESSION['img_query_error'] = "Error executing query: " . $stmt->error;
+            header("Location: ../index.php");
+            die();
+        }
+
+        $result_set = $stmt->get_result();
+
+        if($result_set->num_rows < 1) {
+            $_SESSION['profile_image'] = "";
+        }
+                
+        $row = $result_set->fetch_assoc(); 
+        $_SESSION['profile_image'] = $row['profile_image'];
+                
+        $stmt->close();
     }
 
     /*public function getProfileImgData() {

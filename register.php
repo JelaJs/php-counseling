@@ -55,6 +55,17 @@ if(isset($_SESSION['user_id'])) {
                 <p><?= $_SESSION['query_error']; ?></p>
                 <?php unset($_SESSION['query_error']); ?>
             <?php endif; ?>
+
+            
+            <?php if(isset($_SESSION['username_query_error'])) :?>
+                <p><?= $_SESSION['username_query_error']; ?></p>
+                <?php unset($_SESSION['username_query_error']); ?>
+            <?php endif; ?>
+
+            <?php if(isset($_SESSION['email_query_error'])) :?>
+                <p><?= $_SESSION['email_query_error']; ?></p>
+                <?php unset($_SESSION['email_query_error']); ?>
+            <?php endif; ?>
         </div>
     </div>
 </body>

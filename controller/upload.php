@@ -2,7 +2,7 @@
 
 if(isset($_POST['submit'])) {
 
-    require_once "../Classes/SessionConfig.php";
+require_once "../Classes/SessionConfig.php";
 require_once "../Classes/User.php"; 
 
 $session = new SessionConfig();

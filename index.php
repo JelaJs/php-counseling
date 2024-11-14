@@ -56,6 +56,11 @@ if(isset($_SESSION['user_id'])) {
                         <p><?= $_SESSION['file_error']; ?></p>
                         <?php unset($_SESSION['file_error']); ?>
                     <?php endif ?>
+
+                    <?php if(isset($_SESSION['img_query_error'])) : ?>
+                        <p><?= $_SESSION['img_query_error']; ?></p>
+                        <?php unset($_SESSION['img_query_error']); ?>
+                    <?php endif ?>
                 </div>
                     <?php if(isset($type) && $type === 'listener') : ?>
                     <form action="controller/discution.php" method="POST" class="mt-5">
@@ -72,6 +77,10 @@ if(isset($_SESSION['user_id'])) {
                         <?php if(isset($_SESSION['discution_error'])) :?>
                             <p><?= $_SESSION['discution_error']; ?></p>
                             <?php unset($_SESSION['discution_error']); ?>
+                        <?php endif; ?>
+                        <?php if(isset($_SESSION['query_error'])) :?>
+                            <p><?= $_SESSION['query_error']; ?></p>
+                            <?php unset($_SESSION['query_error']); ?>
                         <?php endif; ?>
                         <?php if($userDiscutions) : ?>
                             <p class="mt-5">Tour discutions:</p>
