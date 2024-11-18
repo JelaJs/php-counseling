@@ -99,6 +99,19 @@ class UserDiscution extends Database {
         return $row;
     }
 
+    public function mergeAndSortQuestionsAndAnswers($discutionQuestions, $discutionAnswers) {
+        $mergedArr = array_merge($discutionQuestions, $discutionAnswers);
+
+        usort($mergedArr, function($a, $b) {
+            $timeA = strtotime($a['created_at']) * 1000; //in miliseconds
+            $timeB = strtotime($b['created_at']) * 1000;
+        
+            return $timeA <=> $timeB;
+        });
+
+        return $mergedArr;
+    }
+
     /*
     public function getDiscutionQuestionsAndAnswersByDiscutionId($discutionId) {
         if(!isset($discutionId) || empty($discutionId)) {
