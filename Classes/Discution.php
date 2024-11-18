@@ -3,22 +3,16 @@
 require_once "Database.php";
 
 class Discution extends Database {
-    private $discutionTopic;
-    private $question;
     private $discutionId;
-    //by default question don't have ansver so I passed 0
-    private $discutionCreatedDefault = 0;
 
-    public function __construct($discutionTopic, $question) {
-        $this->discutionTopic = $discutionTopic;
-        $this->question = $question;
+    public function __construct() {
 
         parent::__construct();
     }
 
-    private function areInputsValid() {
-        $this->isInputValid($this->discutionTopic);
-        $this->isInputValid($this->question);
+    private function areInputsValid($discutionTopic, $discutionQuestion) {
+        $this->isInputValid($discutionTopic);
+        $this->isInputValid($discutionQuestion);
 
         return true;
     }
@@ -38,14 +32,14 @@ class Discution extends Database {
         }
     }
 
-    public function createQuestionAndDiscution() {
+    public function createQuestionAndDiscution($discutionTopic, $discutionQuestion) {
 
-        $this->areInputsValid();
-        $this->createDiscution();
+        $this->areInputsValid($discutionTopic, $discutionQuestion);
+        $this->createDiscution($discutionTopic, $discutionQuestion);
     }
 
-    private function createDiscution() {
-        $query = "INSERT INTO discution (user_id, topic, have_answer) VALUES (?, ?, ?)";
+    private function createDiscution($discutionTopic, $discutionQuestion) {
+        $query = "INSERT INTO discution (user_id, topic) VALUES (?, ?)";
 
         $stmt = $this->connection->prepare($query);
 
@@ -55,7 +49,7 @@ class Discution extends Database {
             die();
         }
 
-        $stmt->bind_param('isi', $_SESSION['user_id'], $this->discutionTopic, $this->discutionCreatedDefault);
+        $stmt->bind_param('is', $_SESSION['user_id'], $discutionTopic);
         $result = $stmt->execute();
 
         if(!$result) {
@@ -68,7 +62,7 @@ class Discution extends Database {
         $stmt->close();
     
         $question = new Question();
-        $question->createQuestion($_SESSION['user_id'], $this->discutionId, $this->question);
+        $question->createQuestion($_SESSION['user_id'], $this->discutionId, $discutionQuestion);
 
         header("Location: ../index.php");
         die();

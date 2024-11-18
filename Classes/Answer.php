@@ -1,7 +1,7 @@
 <?php
-require_once "Database.php";
+require_once "Main.php";
 
-class Answer extends Database{
+class Answer extends Main{
 
     public function __construct() {
 
@@ -10,16 +10,12 @@ class Answer extends Database{
 
     public function isInputValid($input) {
         if(!isset($input)) {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            $_SESSION['answer_error'] = "Inputs can't be empty";
-            die();
+            $this->redirectWithMessage('answer_error', "Inputs can't be empty");
         }
 
         $trimmedInput = trim($input);
         if($trimmedInput == '') {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            $_SESSION['answer_error'] = "Inputs can't be empty";
-            die();
+            $this->redirectWithMessage('answer_error', "Inputs can't be empty");
         }
     }
 
@@ -29,18 +25,14 @@ class Answer extends Database{
         $stmt = $this->connection->prepare($query);
 
         if(!$stmt) {
-            $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            die();
+            $this->redirectWithMessage('query_error', "Error preparing query:  {$this->connection->error}");
         }
 
         $stmt->bind_param('iis', $discutionId, $_SESSION['user_id'], $answer);
         $result = $stmt->execute();
 
         if(!$result) {
-            $_SESSION['query_error'] = "Error registering user: " . $stmt->error;
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            die();
+            $this->redirectWithMessage('query_error', "Error registering user: {$stmt->error}");
         }
     
         $stmt->close();
@@ -53,18 +45,14 @@ class Answer extends Database{
         $stmt = $this->connection->prepare($query);
 
         if(!$stmt) {
-            $_SESSION['query_error'] = "Error preparing query: " . $this->connection->error;
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            die();
+            $this->redirectWithMessage('query_error', "Error preparing query:  {$this->connection->error}");
         }
 
         $stmt->bind_param('ii', $_SESSION['user_id'], $discutionId);
         $result = $stmt->execute();
 
         if(!$result) {
-            $_SESSION['query_error'] = "Error updating profile image: " . $stmt->error;
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            die();
+            $this->redirectWithMessage('query_error', "Error registering user: {$stmt->error}");
         }
         
         header('Location: ' . $_SERVER['HTTP_REFERER']);    

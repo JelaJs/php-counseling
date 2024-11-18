@@ -20,20 +20,34 @@ $discutionById = $discution->getDiscutionByDiscutionId($discution_id);
 $haveAnswer = $discutionById['have_answer'];
 $advisorId = $discutionById['advisor_id'];
 
+function dd($value) {
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+
+    die();
+}
+
 $discutionQuestionsAndUser = $question->getQuestionsFromDiscution($discution_id);
 
-if($discutionQuestionsAndUser) {
-    $discutionQuestions = $discutionQuestionsAndUser[0];
-    $questionUser = $discutionQuestionsAndUser[1];
-}
+$discutionQuestions = $discutionQuestionsAndUser[0];
+$questionUser = $discutionQuestionsAndUser[1];
 
 $discutionAnswersAndUser = $answer->getAnswersFromDiscution($discution_id);
 if($discutionAnswersAndUser) {
     $discutionAnswers = $discutionAnswersAndUser[0];
     $answerUser = $discutionAnswersAndUser[1];
+
+    $mergedArrays = array_merge($discutionQuestions, $discutionAnswers);
+    
+    usort($mergedArrays, function($a, $b) {
+        $timeA = strtotime($a['created_at']) * 1000;
+        $timeB = strtotime($b['created_at']) * 1000;
+    
+        return $timeA <=> $timeB;
+    });
 }
 
-//$mergedArrays = array_merge($discutionQuestions, $discutionAnswers);
 
 $session->startSession();
 ?>
@@ -49,46 +63,65 @@ $session->startSession();
 <body>
     <?php require_once "navbar.php"; ?>
     <div class="container mt-3">
-    <?php if($discutionQuestionsAndUser) : ?>
-        <?php foreach($discutionQuestions as $question) : ?>
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <?php if($questionUser['profile_image']) : ?>
-                        <img src="<?= $questionUser['profile_image']; ?>" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                    <?php else : ?>
-                        <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                    <?php endif; ?>
-                    <div class="d-flex justify-content-between w-100">
-                        <p class="fw-bold mb-0"><?= $questionUser['username']; ?></p>
-                        <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($question['created_at'])); ?></p>
+        <?php if(isset($mergedArrays)) : ?>
+            <?php foreach($mergedArrays as $arr) : ?>
+                <?php if(isset($arr['question'])) :?>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <?php if($questionUser['profile_image']) : ?>
+                                    <img src="<?= $questionUser['profile_image']; ?>" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                <?php else : ?>
+                                    <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                <?php endif; ?>
+                                <div class="d-flex justify-content-between w-100">
+                                    <p class="fw-bold mb-0"><?= $questionUser['username']; ?></p>
+                                    <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($arr['created_at'])); ?></p>
+                                </div>
+                            </div>
+                            <p class="mb-0"><?= $arr['question']; ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php if(isset($arr['answer'])) :?>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <?php if($answerUser['profile_image']) : ?>
+                                    <img src="<?= $answerUser['profile_image']; ?>" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                <?php else : ?>
+                                    <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                <?php endif; ?>
+                                <div class="d-flex justify-content-between w-100">
+                                    <p class="fw-bold mb-0"><?= $answerUser['username']; ?></p>
+                                    <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($arr['created_at'])); ?></p>
+                                </div>
+                            </div>
+                            <p class="mb-0"><?= $arr['answer']; ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <?php foreach($discutionQuestions as $question) : ?>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <?php if($questionUser['profile_image']) : ?>
+                                <img src="<?= $questionUser['profile_image']; ?>" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                            <?php else : ?>
+                                <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                            <?php endif; ?>
+                            <div class="d-flex justify-content-between w-100">
+                                <p class="fw-bold mb-0"><?= $questionUser['username']; ?></p>
+                                <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($question['created_at'])); ?></p>
+                            </div>
+                        </div>
+                        <p class="mb-0"><?= $question['question']; ?></p>
                     </div>
                 </div>
-                <p class="mb-0"><?= $question['question']; ?></p>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-    <?php if($discutionAnswersAndUser) : ?>
-        <?php foreach($discutionAnswers as $answer) : ?>
-            <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <?php if($answerUser['profile_image']) : ?>
-                        <img src="<?= $answerUser['profile_image']; ?>" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                    <?php else : ?>
-                        <img src="profile_images/default/default-avatar.png" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                    <?php endif; ?>
-                    <div class="d-flex justify-content-between w-100">
-                        <p class="fw-bold mb-0"><?= $answerUser['username']; ?></p>
-                        <p class="text-muted mb-0"><?= date("d/m/Y", strtotime($answer['created_at'])); ?></p>
-                    </div>
-                </div>
-                <p class="mb-0"><?= $answer['answer']; ?></p>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     <?php if(isset($_SESSION['query_error'])) : ?>
         <p><?= $_SESSION['query_error']; ?></p>
         <?php unset($_SESSION['query_error']); ?>
