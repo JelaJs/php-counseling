@@ -38,26 +38,10 @@ if(isset($_SESSION['user_id'])) {
         </form>
 
         <div>
-            <?php if(isset($_SESSION['input_error'])) :?>
-                <p><?= $_SESSION['input_error']; ?></p>
-                <?php unset($_SESSION['input_error']); ?>
-            <?php endif; ?>
-
-            <?php if(isset($_SESSION['query_error'])) :?>
-                <p><?= $_SESSION['query_error']; ?></p>
-                <?php unset($_SESSION['query_error']); ?>
-            <?php endif; ?>
-
-            
-            <?php if(isset($_SESSION['username_query_error'])) :?>
-                <p><?= $_SESSION['username_query_error']; ?></p>
-                <?php unset($_SESSION['username_query_error']); ?>
-            <?php endif; ?>
-
-            <?php if(isset($_SESSION['email_query_error'])) :?>
-                <p><?= $_SESSION['email_query_error']; ?></p>
-                <?php unset($_SESSION['email_query_error']); ?>
-            <?php endif; ?>
+            <?php require_once 'parts/checkInputErrors.php'; ?>
+            <?php require_once 'parts/checkQueryErrors.php'; ?>
+            <?php require_once 'parts/checkUsernameQueryErrors.php'; ?>
+            <?php require_once 'parts/checkEmailQueryErrors.php'; ?>
         </div>
     </div>
 <?php require_once "parts/footer.php"; ?>

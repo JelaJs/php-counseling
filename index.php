@@ -30,73 +30,12 @@ if(isset($_SESSION['user_id'])) {
         <div class="row">
             <div class="col-md-3">
                 <?php if(isset($_SESSION['user_id'])) : ?>
-                <div class="card" style="width: 15rem;">
-                    <?php if(isset($profileImage) && $profileImage == '') : ?>
-                    <img src="profile_images/default/default-avatar.png" class="card-img-top" alt="default profile picture">
-                    <?php endif; ?>
-                    <?php if(isset($profileImage) && $profileImage !== '') : ?>
-                        <img src="<?= $profileImage; ?>" class="card-img-top" alt="profile image">
-                    <?php endif; ?>
-                    <div class="card-body">
-                        <h5 class="card-title"><?= $username; ?></h5>
-                        <form action="controller/upload.php" method="POST" enctype="multipart/form-data">
-                            <input type="file" name="file" class="btn p-0">
-                            <button type="submit" name="submit" class="btn btn-primary mt-1">Upload Image</button>
-                        </form>
-                    </div>
-                    <?php if(isset($_SESSION['file_error'])) : ?>
-                        <p><?= $_SESSION['file_error']; ?></p>
-                        <?php unset($_SESSION['file_error']); ?>
-                    <?php endif ?>
-
-                    <?php if(isset($_SESSION['img_query_error'])) : ?>
-                        <p><?= $_SESSION['img_query_error']; ?></p>
-                        <?php unset($_SESSION['img_query_error']); ?>
-                    <?php endif ?>
-                </div>
-                    <?php if(isset($type) && $type === 'listener') : ?>
-                    <form action="controller/discution.php" method="POST" class="mt-5">
-                        <div class="mb-3">
-                            <label class="form-label">Discution Topic</label>
-                            <input type="text" name="discution_topic" class="form-control" placeholder="E.g. Programming">
-                            </div>
-                            <div class="mb-3">
-                            <label class="form-label">Question</label>
-                            <textarea name="question" class="form-control" rows="3" placeholder="Your question"></textarea>
-                        </div>
-                        <button class="btn btn-primary mt-1">Make Discution</button>
-                    </form>
-                        <?php if(isset($_SESSION['discution_error'])) :?>
-                            <p><?= $_SESSION['discution_error']; ?></p>
-                            <?php unset($_SESSION['discution_error']); ?>
-                        <?php endif; ?>
-                        <?php if(isset($_SESSION['query_error'])) :?>
-                            <p><?= $_SESSION['query_error']; ?></p>
-                            <?php unset($_SESSION['query_error']); ?>
-                        <?php endif; ?>
-                        <?php if($userDiscutions) : ?>
-                            <p class="mt-5">Tour discutions:</p>
-                            <ul class="list-group">
-                            <?php foreach($userDiscutions as $userDiscution) : ?>
-                                <li class="list-group-item"><a class="navbar-brand" href="questions.php?discution_id=<?= $userDiscution['id']; ?>"><?= $userDiscution['topic']; ?></a></li>
-                            <?php endforeach; ?>
-                            </ul>
-                        <?php else : ?>
-                            <p class="mt-3">No discutions yet...</p>
-                        <?php endif; ?>
-                    <?php endif; ?>
+                    <?php require_once 'parts/userCard.php'; ?>
+                    <?php require_once 'parts/createAndListUserDiscutions.php'; ?>
                 <?php endif; ?>
             </div>
             <div class="col-md-9 ps-5">
-                <?php if(isset($allDiscutions)) : ?>
-                    <ul class="list-group">
-                        <?php foreach($allDiscutions as $discution) : ?>
-                            <li class="list-group-item w-75"><a class="navbar-brand" href="questions.php?discution_id=<?= $discution['id']; ?>"><?= $discution['topic']; ?></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else : ?>
-                    <p>No discutions yet...</p>
-                <?php endif; ?>
+              <?php require_once 'parts/listAllDiscutions.php'; ?>
             </div>
         </div>
         

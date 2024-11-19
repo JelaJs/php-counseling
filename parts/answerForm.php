@@ -1,4 +1,4 @@
-<?php if(($_SESSION['type'] === "advisor" && $haveAnswer == false) || ($_SESSION['type'] === "advisor" && $haveAnswer == true && $advisorId == $_SESSION['user_id'])) : ?>
+<?php if($checkFunction->isAdvisorAndDontHaveAnswer($haveAnswer) || $checkFunction->isAdvisorAndAlreadyAnswered($haveAnswer, $advisorId)) : ?>
     <form action="controller/answerLogic.php" method="POST" class="mb-3">
         <input type="number" name="discution_id" value="<?= $discution_id; ?>" hidden>
         <div class="mb-3">

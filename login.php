@@ -27,15 +27,8 @@ if(isset($_SESSION['user_id'])) {
         </form>
 
         <div>
-            <?php if(isset($_SESSION['input_error'])) :?>
-                <p><?= $_SESSION['input_error']; ?></p>
-                <?php unset($_SESSION['input_error']); ?>
-            <?php endif; ?>
-
-            <?php if(isset($_SESSION['query_error'])) :?>
-                <p><?= $_SESSION['query_error']; ?></p>
-                <?php unset($_SESSION['query_error']); ?>
-            <?php endif; ?>
+            <?php require_once 'parts/checkInputErrors.php'; ?>
+            <?php require_once 'parts/checkQueryErrors.php'; ?>
         </div>
     </div>
 <?php require_once "parts/footer.php"; ?>

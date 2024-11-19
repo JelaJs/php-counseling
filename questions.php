@@ -8,6 +8,7 @@ require_once "Classes/SessionConfig.php";
 require_once "Classes/UserDiscution.php";
 require_once "Classes/Question.php";
 require_once "Classes/Answer.php";
+require_once "Classes/CheckFunction.php";
 
 $discution_id = $_GET['discution_id'];
 
@@ -15,6 +16,7 @@ $session = new SessionConfig();
 $discution = new UserDiscution();
 $question = new Question();
 $answer = new Answer();
+$checkFunction = new CheckFunction();
 
 $discutionById = $discution->getDiscutionByDiscutionId($discution_id);
 $haveAnswer = $discutionById['have_answer'];
