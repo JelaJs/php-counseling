@@ -10,11 +10,11 @@ if(isset($_SESSION['user_id'])) {
 ?>
 
 
-<?php require_once "parts/header.php"; ?>
-    <?php require_once "parts/navbar.php"; ?>
+<?php require_once "snippets/header.php"; ?>
+    <?php require_once "snippets/navbar.php"; ?>
 
     <div class="container mt-4">
-        <form action="controller/registerLogic.php" method="POST">
+        <form action="controller/registerController.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" placeholder="Exampl123">
@@ -38,10 +38,10 @@ if(isset($_SESSION['user_id'])) {
         </form>
 
         <div>
-            <?php require_once 'parts/checkInputErrors.php'; ?>
-            <?php require_once 'parts/checkQueryErrors.php'; ?>
-            <?php require_once 'parts/checkUsernameQueryErrors.php'; ?>
-            <?php require_once 'parts/checkEmailQueryErrors.php'; ?>
+            <?php require_once 'snippets/checkInputErrors.php'; ?>
+            <?php require_once 'snippets/checkQueryErrors.php'; ?>
+            <?php require_once 'snippets/checkUsernameQueryErrors.php'; ?>
+            <?php require_once 'snippets/checkEmailQueryErrors.php'; ?>
         </div>
     </div>
-<?php require_once "parts/footer.php"; ?>
+<?php require_once "snippets/footer.php"; ?>

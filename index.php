@@ -24,20 +24,20 @@ if(isset($_SESSION['user_id'])) {
 }
 ?>
 
-<?php require_once "parts/header.php"; ?>
-    <?php require_once "parts/navbar.php"; ?>
+<?php require_once "snippets/header.php"; ?>
+    <?php require_once "snippets/navbar.php"; ?>
     <div class="container-fluid mt-5">
         <div class="row">
             <div class="col-md-3">
                 <?php if(isset($_SESSION['user_id'])) : ?>
-                    <?php require_once 'parts/userCard.php'; ?>
-                    <?php require_once 'parts/createAndListUserDiscutions.php'; ?>
+                    <?php require_once 'snippets/userCard.php'; ?>
+                    <?php require_once 'snippets/createAndListUserDiscutions.php'; ?>
                 <?php endif; ?>
             </div>
             <div class="col-md-9 ps-5">
-              <?php require_once 'parts/listAllDiscutions.php'; ?>
+              <?php require_once 'snippets/listAllDiscutions.php'; ?>
             </div>
         </div>
         
     </div>
-<?php require_once "parts/footer.php"; ?>
+<?php require_once "snippets/footer.php"; ?>

@@ -16,7 +16,6 @@ $session = new SessionConfig();
 $discution = new UserDiscution();
 $question = new Question();
 $answer = new Answer();
-$checkFunction = new CheckFunction();
 
 $discutionById = $discution->getDiscutionByDiscutionId($discution_id);
 $haveAnswer = $discutionById['have_answer'];
@@ -37,18 +36,18 @@ if($discutionAnswersAndUser) {
 $session->startSession();
 ?>
 
-<?php require_once 'parts/header.php'; ?>
-    <?php require_once "parts/navbar.php"; ?>
+<?php require_once 'snippets/header.php'; ?>
+    <?php require_once "snippets/navbar.php"; ?>
     <div class="container mt-3">
-        <?php require_once 'parts/questionsAndAnswers.php'; ?>
-        <?php require_once 'parts/onlyQuestions.php'; ?>
-        <?php require "parts/checkQueryErrors.php"; ?>
+        <?php require_once 'snippets/questionsAndAnswers.php'; ?>
+        <?php require_once 'snippets/onlyQuestions.php'; ?>
+        <?php require "snippets/checkQueryErrors.php"; ?>
     
     
         <?php if(isset($_SESSION['user_id'])) : ?>
-            <?php require_once 'parts/questionForm.php'; ?>
+            <?php require_once 'snippets/questionForm.php'; ?>
 
-            <?php require_once 'parts/answerForm.php'; ?>
+            <?php require_once 'snippets/answerForm.php'; ?>
         <?php endif; ?>
     </div>
-<?php require_once "parts/footer.php"; ?>
+<?php require_once "snippets/footer.php"; ?>

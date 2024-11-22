@@ -1,5 +1,5 @@
 <?php if($discutionQuestions[0]['user_id'] === $_SESSION['user_id']) : ?>
-    <form action="controller/questionLogic.php" method="POST" class="mb-3">
+    <form action="controller/questionController.php" method="POST" class="mb-3">
         <input type="number" name="discution_id" value="<?= $discution_id; ?>" hidden>
         <div class="mb-3">
             <input type="text" name="question" class="form-control" placeholder="Type your question here" required>

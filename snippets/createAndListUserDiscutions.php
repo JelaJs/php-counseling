@@ -1,5 +1,5 @@
 <?php if(isset($type) && $type === 'listener') : ?>
-    <form action="controller/discution.php" method="POST" class="mt-5">
+    <form action="controller/discutionController.php" method="POST" class="mt-5">
         <div class="mb-3">
             <label class="form-label">Discution Topic</label>
             <input type="text" name="discution_topic" class="form-control" placeholder="E.g. Programming">
