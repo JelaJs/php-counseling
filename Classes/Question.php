@@ -92,19 +92,4 @@ class Question extends Database{
 
         return $row;
     }
-
-    public function isInputValid($input) {
-        if(!isset($input)) {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            $_SESSION['question_error'] = "Inputs can't be empty";
-            die();
-        }
-
-        $trimmedInput = trim($input);
-        if($trimmedInput == '') {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            $_SESSION['question_error'] = "Inputs can't be empty";
-            die();
-        }
-    }
 }

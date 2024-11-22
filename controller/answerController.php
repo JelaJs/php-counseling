@@ -7,18 +7,21 @@ if($_SERVER["REQUEST_METHOD"] !== 'POST') {
 require_once "../Classes/SessionConfig.php";
 require_once "../Classes/UserDiscution.php";
 require_once "../Classes/Answer.php";
+require_once "../Classes/CheckFunction.php";
+
+$rediectUrl = "$_SERVER[HTTP_REFERER]";
 $session = new SessionConfig();
 $discution = new UserDiscution();
 $answer = new Answer();
 
 $session->startSession();
 
+CheckFunction::isInputValid('answer_error', $_POST['answer'], $rediectUrl);
+CheckFunction::isInputValid('answer_error', $_POST['discution_id'], $rediectUrl);
+
 $discutionById = $discution->getDiscutionByDiscutionId($_POST['discution_id']);
 $discutionHaveAnswer = $discutionById['have_answer'];
 $advisorId = $discutionById['advisor_id'];
-
-$answer->isInputValid($_POST['answer']);
-$answer->isInputValid($_POST['discution_id']);
 
 if($discutionHaveAnswer == false || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id'])) {
     $answer->createAnswer($_POST['discution_id'], $_POST['answer']);

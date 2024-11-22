@@ -3,14 +3,13 @@
 require_once "Database.php";
 
 class Discution extends Database {
-    private $discutionId;
 
     public function __construct() {
 
         parent::__construct();
     }
 
-    private function areInputsValid($discutionTopic, $discutionQuestion) {
+    /*private function areInputsValid($discutionTopic, $discutionQuestion) {
         $this->isInputValid($discutionTopic);
         $this->isInputValid($discutionQuestion);
 
@@ -30,15 +29,9 @@ class Discution extends Database {
             header("Location: ../index.php");
             die();
         }
-    }
+    }*/
 
     public function createQuestionAndDiscution($discutionTopic, $discutionQuestion) {
-
-        $this->areInputsValid($discutionTopic, $discutionQuestion);
-        $this->createDiscution($discutionTopic, $discutionQuestion);
-    }
-
-    private function createDiscution($discutionTopic, $discutionQuestion) {
         $query = "INSERT INTO discution (user_id, topic) VALUES (?, ?)";
 
         $stmt = $this->connection->prepare($query);
@@ -58,11 +51,11 @@ class Discution extends Database {
             die();
         }
 
-        $this->discutionId = $stmt->insert_id;
+        $discutionId = $stmt->insert_id;
         $stmt->close();
     
         $question = new Question();
-        $question->createQuestion($_SESSION['user_id'], $this->discutionId, $discutionQuestion);
+        $question->createQuestion($_SESSION['user_id'], $discutionId, $discutionQuestion);
 
         header("Location: ../index.php");
         die();

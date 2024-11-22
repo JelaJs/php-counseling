@@ -9,6 +9,11 @@ class CheckFunction {
        return $_SESSION['type'] === "advisor" && $haveAnswer == true && $advisorId == $_SESSION['user_id'];
     }
 
+    /*public static function noAnswerOrCurUserAnswered($discutionHaveAnswer, $advisorI) {
+        //return $discutionHaveAnswer == false || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
+        return $discutionHaveAnswer || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
+    }
+*/
     public static function redirectWithMessage($errorName, $message, $location) {
         $_SESSION[$errorName] = $message;
         header("Location: $location");
@@ -58,4 +63,21 @@ class CheckFunction {
             self::redirectWithMessage('input_error', 'Password needs to be at least 6 characters long and needs to have at least one big letter', $redirectUrl);
         }
     }
+
+    public static function isInputValid($error, $input, $redirectUrl) {
+        if(!isset($input)) {
+            self::redirectWithMessage($error, 'You need to add text', $redirectUrl);
+        }
+
+        $trimmedInput= trim($input);
+        if(empty($trimmedInput)) {
+            self::redirectWithMessage($error, 'You need to add text', $redirectUrl);
+        }
+    }
+
+    public static function isFileExist($file, $redirectUrl) {
+        if($file['name'] == '') {
+            self::redirectWithMessage('file_error', 'You need to add image', $redirectUrl);
+        }
+    } 
 }

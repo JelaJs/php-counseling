@@ -8,17 +8,6 @@ class Answer extends Main{
         parent::__construct();
     }
 
-    public function isInputValid($input) {
-        if(!isset($input)) {
-            $this->redirectWithMessage('answer_error', "Inputs can't be empty");
-        }
-
-        $trimmedInput = trim($input);
-        if($trimmedInput == '') {
-            $this->redirectWithMessage('answer_error', "Inputs can't be empty");
-        }
-    }
-
     public function createAnswer($discutionId, $answer) {
         $query = "INSERT INTO answer (discution_id, user_id, answer) VALUES (?, ?, ?)";
 
