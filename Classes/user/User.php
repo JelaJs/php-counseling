@@ -1,5 +1,5 @@
 <?php
-require_once "Database.php";
+require_once "../Classes/Database.php";
 
 class User extends Database{
 
@@ -59,49 +59,14 @@ class User extends Database{
     }
 
     private function updateProfileImage($filenameDestination) {
-        $query = "UPDATE user SET profile_image = ? WHERE id = ?";
+        $stmt = $this->executeQuery("UPDATE user SET profile_image = ? WHERE id = ?", "si", "../index.php", $filenameDestination, $_SESSION['user_id']);
         
-        $stmt = $this->connection->prepare($query);
-
-        if(!$stmt) {
-            $_SESSION['img_query_error'] = "Error preparing query: " . $this->connection->error;
-            header("Location: ../index.php");
-            die();
-        }
-
-        $stmt->bind_param('si', $filenameDestination, $_SESSION['user_id']);    
-        $result = $stmt->execute();
-
-        if(!$result) {
-            $_SESSION['img_query_error'] = "Error updating profile image: " . $stmt->error;
-            header("Location: ../index.php");
-            die();
-        }
-
         $stmt->close();
-        $this->getProfileImgFromDB();    
-        
+        $this->getProfileImgFromDB();
     }
 
     private function getProfileImgFromDB() {
-        $query = "SELECT profile_image FROM user WHERE id = ?";
-
-        $stmt = $this->connection->prepare($query);
-
-        if(!$stmt) {
-            $_SESSION['img_query_error'] = "Error preparing statement: " . $this->connection->error;
-            header("Location: ../index.php");
-            die();
-        }
-
-        $stmt->bind_param('i', $_SESSION['user_id']);
-        $result = $stmt->execute();
-
-        if(!$result) {
-            $_SESSION['img_query_error'] = "Error executing query: " . $stmt->error;
-            header("Location: ../index.php");
-            die();
-        }
+        $stmt = $this->executeQuery("SELECT profile_image FROM user WHERE id = ?", "i", "../index.php", $_SESSION['user_id']);
 
         $result_set = $stmt->get_result();
 

@@ -10,7 +10,7 @@ if(isset($_SESSION['user_id'])) {
 
 require_once '../Classes/CheckFunction.php';
 require_once '../Classes/SessionConfig.php';
-require_once "../Classes/Login.php";
+require_once "../Classes/User/Login.php";
 
 $redirectUrl = '../login.php';
 $session = new SessionConfig();

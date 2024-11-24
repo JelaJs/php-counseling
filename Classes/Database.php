@@ -17,4 +17,29 @@ class Database {
             throw new Exception("Unable to connect to the database.");
         }
     }
+
+    protected function executeQuery($query, $paramTypes, $redirectUrl, ...$params) {
+        $stmt = $this->connection->prepare($query);
+    
+        if (!$stmt) {
+            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
+            header("Location: $redirectUrl");
+            die();
+        }
+    
+        // Bind parameters dynamically
+        if (!empty($paramTypes) && !empty($params)) {
+            $stmt->bind_param($paramTypes, ...$params);
+        }
+    
+        $result = $stmt->execute();
+    
+        if (!$result) {
+            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
+            header("Location: $redirectUrl");
+            die();
+        }
+    
+        return $stmt;
+    }
 }

@@ -5,7 +5,7 @@ if(!isset($_POST['submit'])) {
 }
 
 require_once "../Classes/SessionConfig.php";
-require_once "../Classes/User.php"; 
+require_once "../Classes/User/User.php"; 
 require_once "../Classes/CheckFunction.php";
 
 $redirectUrl = '../index.php';
