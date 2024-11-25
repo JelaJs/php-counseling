@@ -1,4 +1,4 @@
-<?php if(CheckFunction::isAdvisorAndDontHaveAnswer($haveAnswer) || CheckFunction::isAdvisorAndAlreadyAnswered($haveAnswer, $advisorId)) : ?>
+<?php if(DataValidator::isAdvisorAndDontHaveAnswer($haveAnswer) || DataValidator::isAdvisorAndAlreadyAnswered($haveAnswer, $advisorId)) : ?>
     <form action="controller/answerController.php" method="POST" class="mb-3">
         <input type="number" name="discution_id" value="<?= $discution_id; ?>" hidden>
         <div class="mb-3">

@@ -8,22 +8,7 @@ class UserDiscution extends Database {
     }
 
     public function getUserDiscutions() {
-        $query = "SELECT * FROM discution WHERE user_id = ?";
-
-        $stmt = $this->connection->prepare($query);
-
-        if(!$stmt) {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return false;
-        }
-
-        $stmt->bind_param("i", $_SESSION['user_id']);
-        $result = $stmt->execute();
-
-        if(!$result) {
-            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-            return false;
-        }
+        $stmt = $this->executeQuery("SELECT * FROM discution WHERE user_id = ?", "i", "$_SERVER[HTTP_REFERER]", $_SESSION['user_id']);
 
         $result_set = $stmt->get_result();
 
@@ -38,21 +23,9 @@ class UserDiscution extends Database {
     }
 
     public function getAllDiscutions() {
-        $query = "SELECT * FROM discution";
+        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "index.php";
 
-        $stmt = $this->connection->prepare($query);
-    
-        if(!$stmt) {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return false;
-        }
-
-        $result = $stmt->execute();
-
-        if(!$result) {
-            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-            return false;
-        }
+        $stmt = $this->executeQuery("SELECT * FROM discution", null, $referer, null);
 
         $result_set = $stmt->get_result();
 
@@ -67,22 +40,7 @@ class UserDiscution extends Database {
     }
 
     public function getDiscutionByDiscutionId($discutionId) {
-        $query = "SELECT * FROM discution WHERE id = ?";
-
-        $stmt = $this->connection->prepare($query);
-
-        if(!$stmt) {
-            $_SESSION['query_error'] = "Error preparing statement: " . $this->connection->error;
-            return;
-        }
-
-        $stmt->bind_param("i", $discutionId);
-        $result = $stmt->execute();
-
-        if(!$result) {
-            $_SESSION['query_error'] = "Error executing query: " . $stmt->error;
-            return false;
-        }
+        $stmt = $this->executeQuery("SELECT * FROM discution WHERE id = ?", "i", "$_SERVER[HTTP_REFERER]", $discutionId);
 
         $result_set = $stmt->get_result();
 

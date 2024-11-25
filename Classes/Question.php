@@ -15,9 +15,8 @@ class Question extends Database{
         return true;
     }
 
-    public function getQuestionsFromDiscution($discutionId) {
-        $stmt = $this->executeQuery("SELECT * FROM question WHERE discution_id = ?", "i", "$_SERVER[HTTP_REFERER]", $discutionId);
-
+    public function getQuestionsAndUserFromDiscution($discutionId) {
+        $stmt = $this->executeQuery("SELECT q.*, u.username, u.profile_image FROM question AS q INNER JOIN user AS u ON u.id = q.user_id WHERE q.discution_id = ?", "i", "$_SERVER[HTTP_REFERER]", $discutionId);
         $result_set = $stmt->get_result();
 
          if($result_set->num_rows < 1) {
@@ -25,24 +24,9 @@ class Question extends Database{
         }
         
         $row = $result_set->fetch_all(MYSQLI_ASSOC); 
-        $questionUser = $this->getQuestionUser($row[0]['user_id']);
+        $questionUser = ['username' => $row[0]['username'], 'profile_image' => $row[0]['profile_image']];
         $stmt->close();
-
+        
         return [$row, $questionUser];           
-    }
-
-   public function getQuestionUser($userId) {
-        $stmt = $this->executeQuery("SELECT username, profile_image FROM user WHERE id = ?", "i", "$_SERVER[HTTP_REFERER]", $userId);
-
-        $result_set = $stmt->get_result();
-
-        if($result_set->num_rows < 1) {
-            return false;
-        }
-    
-        $row = $result_set->fetch_assoc(); 
-        $stmt->close();
-
-        return $row;
     }
 }

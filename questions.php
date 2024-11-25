@@ -8,7 +8,7 @@ require_once "Classes/SessionConfig.php";
 require_once "Classes/UserDiscution.php";
 require_once "Classes/Question.php";
 require_once "Classes/Answer.php";
-require_once "Classes/CheckFunction.php";
+require_once "Classes/DataValidator.php";
 
 $discution_id = $_GET['discution_id'];
 
@@ -21,7 +21,7 @@ $discutionById = $discution->getDiscutionByDiscutionId($discution_id);
 $haveAnswer = $discutionById['have_answer'];
 $advisorId = $discutionById['advisor_id'];
 
-$discutionQuestionsAndUser = $question->getQuestionsFromDiscution($discution_id);
+$discutionQuestionsAndUser = $question->getQuestionsAndUserFromDiscution($discution_id);
 $discutionQuestions = $discutionQuestionsAndUser[0];
 $questionUser = $discutionQuestionsAndUser[1];
 

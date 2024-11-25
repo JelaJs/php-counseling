@@ -7,7 +7,7 @@ if($_SERVER["REQUEST_METHOD"] !== 'POST') {
 require_once "../Classes/SessionConfig.php";
 require_once "../Classes/UserDiscution.php";
 require_once "../Classes/Question.php";
-require_once "../Classes/CheckFunction.php";
+require_once "../Classes/DataValidator.php";
 
 $rediectUrl = "$_SERVER[HTTP_REFERER]";
 $session = new SessionConfig();
@@ -16,8 +16,8 @@ $question = new Question();
     
 $session->startSession();
 
-CheckFunction::isInputValid('question_error', $_POST['question'], $rediectUrl);
-CheckFunction::isInputValid('question_error', $_POST['discution_id'], $rediectUrl);
+DataValidator::isInputValid('question_error', $_POST['question'], $rediectUrl);
+DataValidator::isInputValid('question_error', $_POST['discution_id'], $rediectUrl);
 
 $userDiscutions = $discution->getUserDiscutions();
 $discutionById = $discution->getDiscutionByDiscutionId($_POST['discution_id']);

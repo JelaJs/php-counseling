@@ -1,6 +1,6 @@
 <?php
 
-class CheckFunction {
+class DataValidator {
     public static function isAdvisorAndDontHaveAnswer($haveAnswer) {
         return $_SESSION['type'] === "advisor" && $haveAnswer == false;
     }
@@ -13,7 +13,7 @@ class CheckFunction {
         //return $discutionHaveAnswer == false || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
         return $discutionHaveAnswer || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
     }
-*/
+    */
     public static function redirectWithMessage($errorName, $message, $location) {
         $_SESSION[$errorName] = $message;
         header("Location: $location");
