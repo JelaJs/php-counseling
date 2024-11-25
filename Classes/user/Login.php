@@ -14,12 +14,8 @@ class Login extends Database {
 
         $result_set = $stmt->get_result();
 
-        if($result_set->num_rows < 1) {
-            return false;
-        }
-
         $stmt->close();
-        return true;
+        return $result_set->num_rows > 0;
     }
 
     private function getPasswordFromDB($email) {

@@ -14,25 +14,17 @@ class Register extends Database{
 
         $result_set = $stmt->get_result();
         
-        if($result_set->num_rows > 0) {
-            return true;
-        }
-
         $stmt->close();
-        return false;
+        return $result_set->num_rows > 0;
     }
 
     public function checkIfEmailExist($email) {
         $stmt = $this->executeQuery("SELECT email FROM user WHERE email = ?", "s", "../register.php", $email);
 
         $result_set = $stmt->get_result();
-
-        if($result_set->num_rows > 0) {
-            return true;
-        }
          
         $stmt->close();
-        return false;
+        return $result_set->num_rows > 0;
     }
 
     public function registerUser($username, $email, $password, $type) {
