@@ -9,11 +9,6 @@ class DataValidator {
        return $_SESSION['type'] === "advisor" && $haveAnswer == true && $advisorId == $_SESSION['user_id'];
     }
 
-    /*public static function noAnswerOrCurUserAnswered($discutionHaveAnswer, $advisorI) {
-        //return $discutionHaveAnswer == false || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
-        return $discutionHaveAnswer || ($discutionHaveAnswer == true && $advisorId == $_SESSION['user_id']);
-    }
-    */
     public static function redirectWithMessage($errorName, $message, $location) {
         $_SESSION[$errorName] = $message;
         header("Location: $location");

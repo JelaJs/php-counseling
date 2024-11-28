@@ -7,11 +7,6 @@ $discution = new UserDiscution();
 $session = new SessionConfig();
 $session->startSession();
 
-if(isset($_GET['success_register']) && isset($_SESSION['success_register'])) {
-    echo $_SESSION['success_register'];
-    unset($_SESSION['success_register']);
-}
-
 $allDiscutions = $discution->getAllDiscutions();
 
 if(isset($_SESSION['user_id'])) {

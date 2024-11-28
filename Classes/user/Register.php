@@ -32,8 +32,6 @@ class Register extends Database{
         $stmt = $this->executeQuery("INSERT INTO user (username, email, password, type) VALUES (?, ?, ?, ?)", "ssss", "../register.php", $username, $email, $passwordHash, $type);
 
         $stmt->close();
-        $_SESSION['success_register'] = "User registered successfully!";
-        header("Location: ../index.php?success_register");
-        die();
+        DataValidator::redirectWithMessage('success_register', 'User registered successfully!', '../index.php?success_register');
     }
 }

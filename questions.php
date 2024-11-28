@@ -25,7 +25,7 @@ $discutionQuestionsAndUser = $question->getQuestionsAndUserFromDiscution($discut
 $discutionQuestions = $discutionQuestionsAndUser[0];
 $questionUser = $discutionQuestionsAndUser[1];
 
-$discutionAnswersAndUser = $answer->getAnswersFromDiscution($discution_id);
+$discutionAnswersAndUser = $answer->getAnswersAndUserFromDiscution($discution_id);
 if($discutionAnswersAndUser) {
     $discutionAnswers = $discutionAnswersAndUser[0];
     $answerUser = $discutionAnswersAndUser[1];

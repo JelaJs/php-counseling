@@ -4,10 +4,6 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../index.php");
 }
 
-if(isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
-}
-
 require_once '../Classes/DataValidator.php';
 require_once '../Classes/SessionConfig.php';
 require_once "../Classes/User/Login.php";
@@ -17,6 +13,10 @@ $session = new SessionConfig();
 $user = new Login();
 
 $session->startSession();
+
+if(isset($_SESSION['user_id'])) {
+    header("Location: ../index.php");
+}
 
 DataValidator::isEmailFieldValid($_POST['email'], $redirectUrl);
 DataValidator::isPasswordFieldValid($_POST['password'], $redirectUrl);

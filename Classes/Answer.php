@@ -1,7 +1,7 @@
 <?php
-require_once "Main.php";
+require_once "Database.php";
 
-class Answer extends Main{
+class Answer extends Database {
 
     public function __construct() {
 
@@ -22,7 +22,7 @@ class Answer extends Main{
         $stmt->close();
     }
 
-    public function getAnswersFromDiscution($discutionId) {
+    public function getAnswersAndUserFromDiscution($discutionId) {
         $stmt = $this->executeQuery("SELECT a.*, u.username, u.profile_image FROM answer AS a INNER JOIN user AS u ON u.id = a.user_id WHERE a.discution_id = ?", "i", "$_SERVER[HTTP_REFERER]", $discutionId);
 
         $result_set = $stmt->get_result();
