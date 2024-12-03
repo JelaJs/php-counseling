@@ -79,4 +79,16 @@ class UserDiscution extends Database {
 
         return $mergedArr;
     }
+
+    public function deleteDiscution($discutionId) {
+        $stmt = $this->executeQuery("DELETE FROM discution WHERE id = ?", "i", "$_SERVER[HTTP_REFERER]", $discutionId);
+
+        return true;
+    }
+
+    public function renameDiscutionTopic($topic, $id) {
+        $stmt = $this->executeQuery("UPDATE discution SET topic = ? WHERE id = ?", "si", "$_SERVER[HTTP_REFERER]", $topic, $id);
+
+        return true;
+    }
 }
